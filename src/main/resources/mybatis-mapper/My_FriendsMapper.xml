@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhihao.p2p_server.mapper.My_FriendsMapper">
+    <insert id="insertMy_Friends">
+        insert into My_Friends value (#{id},#{my_user_id},#{my_friend_user_id})
+    </insert>
+    <delete id="deleteByFriendIdandMyId">
+        delete from My_Friends where my_user_id = #{MyId} and myfriend_user_id =#{FriendId}
+    </delete>
+
+    <select id="getMyFriendsByMyID" resultMap="MyFriendsMessage" resultType="list">
+        select m.id,m.my_user_id,u.username,u.face_image,u.nickname
+        from My_Friends m ,Users u
+        where m.myfriend_user_id = u.username and m.my_user_id = #{my_user_id}
+    </select>
+    <resultMap id="MyFriendsMessage" type="com.zhihao.p2p_server.domain.My_Friends">
+        <id  property="id" column="id"></id>
+        <result property="my_user_id" column="my_user_id"/>
+        <association property="myFriend_user" resultMap="myFriend">
+        </association>
+    </resultMap>
+    <resultMap id="myFriend" type="com.zhihao.p2p_server.domain.Users">
+        <result property="username" column="username"/>
+        <result property="face_image" column="face_image"/>
+        <result property="nickname" column="nickname"/>
+    </resultMap>
+</mapper>

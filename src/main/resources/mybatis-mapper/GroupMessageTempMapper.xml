@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhihao.p2p_server.mapper.GroupMessageTempMapper">
+
+
+    <insert id="insertByChatIDOrAccept">
+        insert into group_messagetemp value (#{id},#{chatMessageId},#{acceptUser})
+    </insert>
+    <delete id="deleteByChatMessageId">
+        delete from group_messagetemp where chatmessageid = #{chatMessageId}
+    </delete>
+</mapper>

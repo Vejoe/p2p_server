@@ -1,0 +1,250 @@
+syntax = "proto2";
+
+package protobuf;
+
+option optimize_for = SPEED;
+option java_package = "com.zhihao.p2p_server.protobuf";
+option java_outer_classname = "Message";
+
+message MyMessage{
+    enum ActionType{
+        RegisterAction = 0;
+        LoginAction = 1;
+        QueryFriends = 2;
+        LoginUserMessage = 3;
+        MakeFriendsAction = 4;
+        AcceptOrRefuseFriendsAction = 5;
+        GetMyFriendsListAction = 6;
+        ChatMessageSendOrAccept = 7;
+        CreateGroupAction = 8;
+        ChangeMyMessageAction = 9;
+        ChangeGroupAction = 10;
+        CameraOrVoiceRequestAction = 11;
+        CameraOrVoiceResponseAction = 12;
+        CloseCameraOrVoiceAction = 13;
+        DeleteFriendAction = 14;
+        CloseTCPConnection = 15;
+        IdleStateAction = 16;
+        QuitGroupAction = 17;
+    }
+    required ActionType action_type = 1;
+
+    oneof dataBody{
+        Register_Message register_Message = 2;
+        Login_Message login_Message = 3;
+        Request request = 4;
+        Response response = 5;
+        CloseCameraOrVoice closeCameraOrVoice = 6;
+        CloseTCPConnection closeTCPConnection = 7;
+        IdleStateAction idleStateAction = 8;
+    }
+}
+
+message IdleStateAction{
+    optional string sendUserName = 1;
+}
+
+message CloseTCPConnection{
+    optional string closeUserName = 1;
+}
+
+message CloseCameraOrVoice{
+    optional string closeUserName = 1;
+    optional string acceptUserName = 2;
+    optional string closeRemark = 3;
+}
+
+message Response{
+    oneof dataBody{
+        Query_Friends_Response query_Friends_Response = 1;
+        Login_User_Message login_User_Message = 2;
+        Make_Friend_Response make_Friend_Response = 3;
+        GetMyFriendsMessage_Response getMyFriendsMessage_Response = 4;
+        Accept_ChatMessage_Response accept_ChatMessage_Response = 5;
+        Create_Group_Response create_Group_Response = 6;
+        CameraOrVoiceResponse cameraOrVoiceResponse = 7;
+    }
+}
+
+message Request{
+    oneof dataBody{
+        Query_Friends_Request query_Friends_Request = 1;
+        Make_Friend_Request make_Friend_Request = 2;
+        AcceptOrRefuseFriends acceptOrRefuseFriends = 3;
+        Send_ChatMessage_Request send_ChatMessage_Request = 4;
+        Create_Group_Request create_Group_Request = 5;
+        ChangeMyMessage_Request changeMyMessageAction = 6;
+        ChangeMyPassword changeMyPassword = 7;
+        ChangeGroupMessage changeGroupMessage = 8;
+        CameraOrVoiceRequest cameraOrVoiceRequest = 9;
+        DeleteFriendRequest deleteFriendRequest = 10;
+        QuitGroupRequest quitGroupRequest = 11;
+    }
+}
+
+message QuitGroupRequest{
+    optional string group_id = 1;
+    optional string quit_userName = 2 ;
+}
+
+message DeleteFriendRequest{
+    optional string sender_userName = 1;
+    optional string deleted_userName = 2 ;
+}
+
+message CameraOrVoiceResponse{
+    optional string sender = 1;
+    optional string accepter = 2;
+    optional string refuseRemark = 3;
+    required CameraOrVoiceType cameraOrVoiceType = 4;
+    required AcceptOrNo acceptOrNo = 5;
+    enum CameraOrVoiceType{
+        Camera = 1;
+        Voice = 2;
+    }
+    enum AcceptOrNo{
+        Accept = 1;
+        Refuse = 2;
+    }
+}
+
+message CameraOrVoiceRequest{
+    optional string sender = 1;
+    optional string accepter = 2;
+    required CameraOrVoiceType cameraOrVoiceType = 3;
+    enum CameraOrVoiceType{
+        Camera = 1;
+        Voice = 2;
+    }
+}
+
+message ChangeGroupMessage{
+    optional string GroupUserName = 1;
+    optional string GroupName = 2;
+}
+
+message ChangeMyPassword{
+    optional string UserName = 1;
+    optional string oldPassword = 2;
+    optional string newpassword = 3;
+}
+
+message ChangeMyMessage_Request{
+    optional string myImage = 1;
+    optional string UserName = 2;
+    optional string NickName = 3;
+}
+
+
+message Create_Group_Response{
+    repeated All_Group all_Group = 1;
+    message All_Group{
+        optional string groupid = 1;
+        optional string group_creator = 2;
+        optional string groupName = 3;
+        repeated Group_User group_User = 4;
+        message Group_User{
+            optional string username = 1;
+            optional string face_image = 2;
+            optional string nickname = 3;
+        }
+    }
+}
+
+message Create_Group_Request{
+    optional string group_creator = 1;
+    optional string groupName = 2;
+    repeated string userName = 3;
+}
+
+message Accept_ChatMessage_Response {
+    repeated Accept_ChatMessage_Body accept_ChatMessage_Body = 1;
+
+    message Accept_ChatMessage_Body {
+        optional string send_user_id = 1;
+        optional string accept_user_id = 2;
+        optional string msg = 3;
+        optional string msg_type = 4;
+        optional string create_time = 6;
+        optional string send_user_nickname = 7;
+        optional string send_user_image = 8;
+    }
+}
+
+message Send_ChatMessage_Request{
+    optional string send_user_id = 1;
+    optional string accept_user_id = 2;
+    optional string msg = 3;
+    optional string msg_type = 4;
+    optional string sign_flag = 5;
+    optional string create_time = 6;
+}
+
+message GetMyFriendsMessage_Response{
+    repeated  MyFriendsMessage myFriendsMessage = 1;
+    message MyFriendsMessage{
+        optional string username = 1;
+        optional string face_image = 2;
+        optional string nickname = 3;
+    }
+}
+
+message AcceptOrRefuseFriends{
+    enum  AcceptOrRefuseType{
+        Accept = 0;
+        Refuse = 1;
+    }
+    required AcceptOrRefuseType acceptOrRefuseType = 1;
+    optional string send_userName = 2;
+    optional string accept_userName = 3;
+    optional string remarks = 4;
+    optional string request_date_time = 5;
+}
+
+message Make_Friend_Request{
+    optional string send_userName = 1;
+    optional string accept_userName = 2;
+    optional string remarks = 3;
+}
+
+message Make_Friend_Response{
+    repeated  Send_FriendRequest_User_Message send_FriendRequest_User_Message = 1;
+    message Send_FriendRequest_User_Message{
+        optional string send_userName = 1;
+        optional string face_image = 2;
+        optional string nickname = 3;
+        optional string remarks = 4;
+        optional string request_date_time = 5;
+    }
+}
+
+message Login_User_Message{
+    optional string userName =1;
+    optional string face_image = 2;
+    optional string face_image_big = 3;
+    optional string nickname = 4;
+}
+
+message Query_Friends_Request{
+    optional string userName =1;
+}
+
+message Query_Friends_Response{
+    optional string userName =1;
+    optional string face_image = 2;
+    optional string face_image_big = 3;
+    optional string nickname = 4;
+}
+
+message Register_Message{
+    optional string username = 1;
+    optional string password = 2;
+    optional string face_image = 3;
+    optional string face_image_big = 4;
+    optional string nickname = 5;
+}
+
+message Login_Message{
+    optional string username = 1;
+    optional string password = 2;
+}

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhihao.p2p_server.mapper.Chat_MessageMapper">
+
+    <insert id="insertChat_Message">
+        insert into Chat_Message value (#{id} ,#{send_user_id} ,#{accept_user_id} , #{msg} ,#{msg_type},#{sign_flag},#{create_time})
+    </insert>
+
+    <update id="updateChat_MessageByAccept_user_id">
+        update Chat_Message set sign_flag = 1 where accept_user_id = #{accept_user_id}
+
+    </update>
+
+    <select id="getChat_MessageByAccept_user_id" resultMap="Send_ChatMessageMap">
+        select c.id,c.send_user_id,c.accept_user_id,c.msg,c.msg_type,c.create_time,u.face_image,u.nickname
+        from Chat_Message c ,Users u
+        where c.send_user_id =u.username and c.sign_flag = '0' and c.accept_user_id = #{accept_user_id}
+    </select>
+    <select id="getGroupChatMessageByAccept_user_id" resultType="com.zhihao.p2p_server.domain.Chat_Message">
+        select c.id,c.send_user_id,c.accept_user_id,c.msg,c.msg_type,c.sign_flag,c.create_time
+        from Chat_Message c,group_messagetemp g
+        where c.id = g.chatmessageid and g.acceptuser = #{accept_user_id}
+        order BY create_time
+    </select>
+
+    <resultMap id="Send_ChatMessageMap" type="com.zhihao.p2p_server.domain.Chat_Message">
+        <id  property="id" column="id"></id>
+        <result property="accept_user_id" column="accept_user_id"/>
+        <result property="send_user_id" column="send_user_id"/>
+        <result property="msg" column="msg"/>
+        <result property="msg_type" column="msg_type"/>
+        <result property="create_time" column="create_time"/>
+        <association property="send_users" resultMap="userMap">
+        </association>
+    </resultMap>
+    <resultMap id="userMap" type="com.zhihao.p2p_server.domain.Users">
+        <result property="face_image" column="face_image"/>
+        <result property="nickname" column="nickname"/>
+    </resultMap>
+
+</mapper>

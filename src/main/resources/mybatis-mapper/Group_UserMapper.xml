@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhihao.p2p_server.mapper.Group_UserMapper">
+
+    <insert id="insertGroup_User" parameterType="com.zhihao.p2p_server.domain.Group_User">
+        INSERT INTO Group_User VALUE (#{id},#{groupid},#{username})
+    </insert>
+    <delete id="deleteByUserName">
+        delete from Group_User where groupid = #{groupId} and username = #{UserName}
+    </delete>
+    <select id="getUsersByGroupID" resultType="string">
+        select username from group_user where groupid = #{groupid}
+    </select>
+
+
+</mapper>

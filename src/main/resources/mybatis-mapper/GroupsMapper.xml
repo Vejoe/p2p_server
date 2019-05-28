@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhihao.p2p_server.mapper.GroupsMapper">
+
+    <insert id="insertGroups" parameterType="com.zhihao.p2p_server.domain.Group_Message">
+        INSERT INTO group_message VALUE (#{id},#{group_name},#{creat_username},#{creat_time})
+    </insert>
+    <update id="updateGroupMessageByGorupid">
+        update group_message set group_name = #{groupName} where id = #{groupId}
+
+    </update>
+    <delete id="deleteById">
+        delete from group_message where id = #{groupId}
+    </delete>
+    <select id="getGroupMessageByUserName" resultType="list" resultMap="GroupMessageMap">
+        select c.id,c.group_Name,c.creat_username, b.username,b.face_image,b.nickname
+        from group_user a , users b , group_message c
+        where a.username = b.username and	a.groupid = c.id and c.id
+        in ( select c.id from group_user a , group_message c where  a.groupid = c.id and a.username = #{username})
+    </select>
+
+
+
+    <select id="getGroupMessageByGroupID" resultType="com.zhihao.p2p_server.domain.Group_Message" resultMap="GroupMessageMap">
+		select c.id,c.group_Name,c.creat_username, b.username,b.face_image,b.nickname
+        from group_user a , users b , group_message c
+        where a.username = b.username and	a.groupid = c.id and c.id=#{id};
+    </select>
+    <resultMap id="GroupMessageMap" type="com.zhihao.p2p_server.domain.Group_Message">
+        <id property="id" column="id"></id>
+        <result property="creat_username" column="creat_username"></result>
+        <result property="group_name" column="group_Name"></result>
+        <collection property="usersList" ofType="com.zhihao.p2p_server.domain.Users">
+            <result property="username" column="username"></result>
+            <result property="face_image" column="face_image"></result>
+            <result property="nickname" column="nickname"></result>
+        </collection>
+    </resultMap>
+</mapper>

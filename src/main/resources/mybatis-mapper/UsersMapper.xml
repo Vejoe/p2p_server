@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhihao.p2p_server.mapper.UsersMapper">
+    <insert id="insert" parameterType="com.zhihao.p2p_server.domain.Users">
+        INSERT INTO USERS VALUE (#{id},#{username},#{password},#{face_image},#{face_image_big},#{nickname})
+    </insert>
+
+    <update id="updateUsersByUser">
+        update users SET nickname = #{nickname}
+
+        <if test="face_image!=null and face_image!=''">
+            , face_image = #{face_image}
+        </if>
+        where username = #{username}
+    </update>
+
+    <update id="updateUserPassword">
+        update users SET password = #{newPassword}where username = #{userName}
+    </update>
+
+    <select id="getUserCountByUserName" resultType="java.lang.Integer">
+        SELECT count(id)  FROM USERS WHERE username=#{userName}
+    </select>
+    <select id="getUserCountByUserNameAndPassWord" resultType="java.lang.Integer">
+        SELECT count(id)  FROM USERS WHERE username=#{userName} and passWord=#{passWord}
+    </select>
+    <select id="getUsersByUserName" resultType="com.zhihao.p2p_server.domain.Users">
+        SELECT username , face_image , nickname from USERS WHERE username = #{userName}
+    </select>
+
+</mapper>
+
